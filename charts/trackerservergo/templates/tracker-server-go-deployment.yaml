@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    version: 1.34.0
+  labels:
+    app: trackerserver-go
+  name: trackerserver-go
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: trackerserver-go
+  template:
+    metadata:
+      annotations:
+        version: 1.34.0
+      labels:
+        app: trackerserver-go
+    spec:
+      {{- with .Values.trackerServerGo.nodeSelector }}
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                    {{- range . }}
+                      - {{ . | quote }}
+                    {{- end }}
+      {{- end }}
+      containers:
+        - image: {{ .Values.trackerServerGo.image.repository }}:{{ .Values.trackerServerGo.image.tag }}-{{ .Values.trackerServerGo.image.arch }}
+          name: trackerserver-go
+          envFrom:
+            - configMapRef:
+                name: {{ .Values.global.appName }}-tracker-server-go-config
+            - secretRef:
+                name: {{ .Values.global.appName }}-secrets
+          resources:
+            {{- toYaml .Values.trackerServerGo.resources | nindent 12 }}
+          ports:
+            - containerPort: {{ .Values.trackerServerGo.tlsPort }}
+              protocol: UDP
+            - containerPort: {{ .Values.trackerServerGo.port }}
+              protocol: TCP
+            - containerPort: {{ .Values.trackerServerGo.quicPort }}
+              protocol: UDP
+      restartPolicy: Always

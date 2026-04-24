@@ -1,0 +1,116 @@
+# Default values for tracker_simulator.
+global:
+  appName: "tracker-simulator-nextgen"
+  networkHost: &networkHost "10.0.0.16"
+  secrets:
+    googleMapsApiKey: "AIzaSyCiPL7-RukqhQttcMxmKaOCg1-V9xfOh94"
+
+  jaeger:
+    host: *networkHost
+    port: 4317
+
+  redis:
+    host: *networkHost
+    port: 6379
+    streamKey: "latency:metrics:stream"
+
+  mqtt:
+    host: *networkHost
+    port: 1883
+    quicPort: 14567
+
+  envoy:
+    host: &envoyHost "10.0.0.16"
+    trackerServerGoPort: &trackerServerGoPort 32016
+    trackerServerTlsGoPort: &trackerServerTlsGoPort 30599
+    trackerServerQuicGoPort: &trackerServerQuicGoPort 30389
+    trackerClientGoPort: &trackerClientGoPort 32531
+    trackerServerPort: &trackerServerPort 31346
+    trackerServerGrpcPort: &trackerServerGrpcPort 30548
+    trackerClientPort: &trackerClientPort 32712
+    trackerAnalyticsPort: &trackerAnalyticsPort 30313
+    communicationsAppPort: &communicationsAppPort 32326
+
+trackerservergo:
+  trackerServerGo:
+    host: *networkHost
+    port: 18098
+    tlsPort: 8098
+    quicPort: 8444
+    trackerClientHost: *envoyHost
+    trackerClientPort: *trackerClientGoPort
+    image:
+      repository: docker.io/jhonnyvennom/tracker-server-go
+      tag: "2.1.0"
+      arch: amd64
+    replicas: 1
+    resources:
+      requests: { memory: "1024Mi", cpu: "750m" }
+      limits:   { memory: "1024Mi", cpu: "750m" }
+    nodeSelector:
+      - "jon2minipc"
+      - "jon-legion-go-8apu1"
+
+trackerclientgo:
+  trackerClientGo:
+    host: *networkHost
+    port: 8099
+    trackerServerGoHost: *envoyHost
+    trackerServerGoPort: *trackerServerGoPort
+    trackerServerGoTlsPort: *trackerServerTlsGoPort
+    trackerServerGoGrpcTlsPort: *trackerServerTlsGoPort
+    metricsPath: "/api/v1/metrics"
+    isTls: false
+    quicPort: *trackerServerQuicGoPort
+    image:
+      repository: docker.io/jhonnyvennom/tracker-client-go
+      tag: "2.2.1"
+      arch: amd64
+    replicas: 1
+    resources:
+      requests: { memory: "1024Mi", cpu: "750m" }
+      limits:   { memory: "1024Mi", cpu: "750m" }
+    nodeSelector:
+      - "jon2minipc"
+      - "jon-legion-go-8apu1"
+
+communicationsapp:
+  communicationsApp:
+    host: *networkHost
+    port: 80
+    serverPort: *trackerServerPort
+    trackerApp:
+      port: *trackerServerPort
+    trackerClientApp:
+      port: *trackerClientPort
+    trackerServerGoApp:
+      port: *trackerServerGoPort
+    trackerClientGoApp:
+      port: *trackerClientGoPort
+    trackerAnalyticsApp:
+      port: *trackerAnalyticsPort
+    mqttWsUrl: "ws://10.0.0.16:8090/mqtt"
+    image:
+      repository: docker.io/jhonnyvennom/communications_app
+      tag: "1.3.2"
+      arch: arm64
+    replicas: 1
+    resources:
+      requests: { memory: "1024Mi", cpu: "750m" }
+      limits:   { memory: "1024Mi", cpu: "750m" }
+    nodeSelector:
+      - "rpi4b"
+      
+trackeranalytics:
+  trackerAnalytics:
+    port: 5050
+    image:
+      repository: docker.io/jhonnyvennom/tracker-analytics
+      tag: "1.1.0"
+      arch: amd64
+    replicas: 1
+    resources:
+      requests: { memory: "1024Mi", cpu: "750m" }
+      limits:   { memory: "1024Mi", cpu: "750m" }
+    nodeSelector:
+      - "jon2minipc"

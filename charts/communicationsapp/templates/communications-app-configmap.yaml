@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.global.appName }}-communications-app-config
+data:
+  REACT_APP_SERVER_URL: {{ .Values.communicationsApp.host | quote }}
+  REACT_APP_SERVER_PORT: {{ .Values.communicationsApp.serverPort | quote }}
+  REACT_APP_TRACKER_PORT: {{ .Values.communicationsApp.trackerApp.port | quote }}
+  REACT_APP_TRACKER_CLIENT: {{ .Values.communicationsApp.trackerClientApp.port | quote }}
+  REACT_APP_TRACKER_SERVER_GO_PORT: {{ .Values.communicationsApp.trackerServerGoApp.port | quote }}
+  REACT_APP_TRACKER_CLIENT_GO_PORT: {{ .Values.communicationsApp.trackerClientGoApp.port | quote }}
+  REACT_APP_TRACKER_ANALYTICS_PORT: {{ .Values.communicationsApp.trackerAnalyticsApp.port | quote }}
+  REACT_APP_MQTT_WS_URL: {{ .Values.communicationsApp.mqttWsUrl | quote }}

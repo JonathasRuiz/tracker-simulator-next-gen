@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    version: 1.34.0
+  labels:
+    app: communications-app
+    traffic: active
+  name: communications-app
+spec:
+  ports:
+    - name: communications-app-3001
+      port: {{ .Values.communicationsApp.port }}
+      targetPort: {{ .Values.communicationsApp.port }}
+      protocol: TCP
+  selector:
+    app: communications-app
+    traffic: active

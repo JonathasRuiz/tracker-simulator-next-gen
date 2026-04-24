@@ -1,0 +1,21 @@
+dependencies:
+- name: trackeranalytics
+  repository: file://charts/trackeranalytics
+  version: 0.1.0
+- name: trackerclient
+  repository: file://charts/trackerclient
+  version: 0.1.0
+- name: trackerclientgo
+  repository: file://charts/trackerclientgo
+  version: 0.1.0
+- name: trackerserver
+  repository: file://charts/trackerserver
+  version: 0.1.0
+- name: trackerservergo
+  repository: file://charts/trackerservergo
+  version: 0.1.0
+- name: communicationsapp
+  repository: file://charts/communicationsapp
+  version: 0.1.0
+digest: sha256:093bc67bb0971e66f2e09054590e2fd5accd655effa62614edae21d55f42a40e
+generated: "2026-04-24T12:14:03.180147441-06:00"

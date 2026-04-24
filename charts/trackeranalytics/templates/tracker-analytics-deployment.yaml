@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    version: 1.34.0
+  labels:
+    app: trackeranalytics
+  name: trackeranalytics
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: trackeranalytics
+  template:
+    metadata:
+      annotations:
+        version: 1.34.0
+      labels:
+        app: trackeranalytics
+    spec:
+      {{- with .Values.trackerAnalytics.nodeSelector }}
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                - key: kubernetes.io/hostname
+                  operator: In
+                  values:
+                  {{- range . }}
+                    - {{ . | quote }}
+                  {{- end }}
+      {{- end }}
+      containers:
+        - image: {{ .Values.trackerAnalytics.image.repository }}:{{ .Values.trackerAnalytics.image.tag }}-{{ .Values.trackerAnalytics.image.arch }}
+          name: trackeranalytics
+          envFrom:
+            - configMapRef:
+                name: {{ .Values.global.appName }}-tracker-analytics-config
+          ports:
+            - containerPort: {{ .Values.trackerAnalytics.port }}
+              protocol: TCP
+      restartPolicy: Always

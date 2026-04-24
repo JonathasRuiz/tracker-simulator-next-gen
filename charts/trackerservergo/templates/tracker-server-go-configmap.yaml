@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.global.appName }}-tracker-server-go-config
+data:
+  MQTT_BROKER_HOST: '{{ .Values.global.mqtt.host }}'
+  MQTT_BROKER_PORT: '{{ .Values.global.mqtt.quicPort }}'
+  APP_HOST: '{{ .Values.trackerServerGo.host }}'
+  APP_PORT: '{{ .Values.trackerServerGo.port }}'
+  APP_TLS_PORT: '{{ .Values.trackerServerGo.tlsPort }}'
+  APP_QUIC_PORT: '{{ .Values.trackerServerGo.quicPort }}'
+  TRACKER_CLIENT_HOST: '{{ .Values.trackerServerGo.trackerClientHost }}'
+  TRACKER_CLIENT_PORT: '{{ .Values.trackerServerGo.trackerClientPort }}'
+  IS_TLS: '{{ .Values.trackerServerGo.isTls }}'
+  REDIS_HOST: '{{ .Values.global.redis.host }}'
+  REDIS_PORT: '{{ .Values.global.redis.port }}'

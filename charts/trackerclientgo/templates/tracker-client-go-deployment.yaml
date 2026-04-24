@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    version: 1.34.0
+  labels:
+    app: trackerclient-go
+  name: trackerclient-go
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: trackerclient-go
+  template:
+    metadata:
+      annotations:
+        version: 1.34.0
+      labels:
+        app: trackerclient-go
+    spec:
+      {{- with .Values.trackerClientGo.nodeSelector }}
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                    {{- range . }}
+                      - {{ . | quote }}
+                    {{- end }}
+      {{- end }}
+      containers:
+        - image: {{ .Values.trackerClientGo.image.repository }}:{{ .Values.trackerClientGo.image.tag }}-{{ .Values.trackerClientGo.image.arch }}
+          name: trackerclient-go
+          envFrom:
+            - configMapRef:
+                name: {{ .Values.global.appName }}-tracker-client-go-config
+            - secretRef:
+                name: {{ .Values.global.appName }}-secrets
+          resources:
+            {{- toYaml .Values.trackerClientGo.resources | nindent 12 }}
+          ports:
+            - containerPort: {{ .Values.trackerClientGo.port }}
+              protocol: TCP
+      restartPolicy: Always

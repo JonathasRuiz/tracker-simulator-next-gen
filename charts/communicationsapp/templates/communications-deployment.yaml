@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    version: 1.34.0
+  labels:
+    app: communications-app
+    traffic: active
+  name: communications-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: communications-app
+  template:
+    metadata:
+      annotations:
+        version: 1.34.0
+      labels:
+        app: communications-app
+        traffic: active
+    spec:
+      {{- with .Values.communicationsApp.nodeSelector }}
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values: 
+                      {{- toYaml . | nindent 20 }}
+      {{- end }}
+      containers:
+        - image: "{{ .Values.communicationsApp.image.repository }}:{{ .Values.communicationsApp.image.tag }}-{{ .Values.communicationsApp.image.arch }}"
+          name: communications-app
+          envFrom:
+            - configMapRef:
+                name: {{ .Values.global.appName }}-communications-app-config
+            - secretRef:
+                name: {{ .Values.global.appName }}-secrets
+          ports:
+            - containerPort: {{ .Values.communicationsApp.port }}
+              protocol: TCP
+      restartPolicy: Always

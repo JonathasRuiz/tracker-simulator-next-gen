@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.global.appName }}-tracker-client-go-config
+data:
+  TRACKER_SERVER_ENVOY_HOST: '{{ .Values.global.networkHost }}'
+  TRACKER_SERVER_HOST: '{{ .Values.trackerClientGo.trackerServerGoHost }}'
+  TRACKER_SERVER_PORT: '{{ .Values.trackerClientGo.trackerServerGoPort }}'
+  TRACKER_TLS_SERVER_PORT: '{{ .Values.trackerClientGo.trackerServerGoTlsPort }}'
+  TRACKER_GRPC_TLS_SERVER_PORT: '{{ .Values.trackerClientGo.trackerServerGoGrpcTlsPort }}'
+  TRACKER_CLIENT_PORT: '{{ .Values.trackerClientGo.port }}'
+  METRICS_PATH: '{{ .Values.trackerClientGo.metricsPath }}'
+  IS_TLS: '{{ .Values.trackerClientGo.isTls }}'
+  QUIC_PORT: '{{ .Values.trackerClientGo.quicPort }}'
+  MQTT_BROKER_HOST: '{{ .Values.global.mqtt.host }}'
+  MQTT_BROKER_PORT: '{{ .Values.global.mqtt.quicPort }}'
