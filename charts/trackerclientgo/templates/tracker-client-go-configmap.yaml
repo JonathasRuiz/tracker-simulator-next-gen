@@ -3,7 +3,7 @@ kind: ConfigMap
 metadata:
   name: {{ .Values.global.appName }}-tracker-client-go-config
 data:
-  TRACKER_SERVER_ENVOY_HOST: '{{ .Values.global.networkHost }}'
+  TRACKER_SERVER_ENVOY_HOST: '{{ .Values.global.envoy.host }}'
   TRACKER_SERVER_HOST: '{{ .Values.trackerClientGo.trackerServerGoHost }}'
   TRACKER_SERVER_PORT: '{{ .Values.trackerClientGo.trackerServerGoPort }}'
   TRACKER_TLS_SERVER_PORT: '{{ .Values.trackerClientGo.trackerServerGoTlsPort }}'
