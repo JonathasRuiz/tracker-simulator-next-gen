@@ -30,7 +30,7 @@ global:
 
 trackerservergo:
   trackerServerGo:
-    host: *networkHost
+    host: *envoyHost
     port: 18098
     tlsPort: 8098
     quicPort: 8444
@@ -48,7 +48,7 @@ trackerservergo:
 
 trackerclientgo:
   trackerClientGo:
-    host: *networkHost
+    host: *envoyHost
     port: 8099
     trackerServerGoHost: *envoyHost
     trackerServerGoPort: *trackerServerGoPort
@@ -71,7 +71,7 @@ communicationsapp:
   communicationsApp:
     host: *envoyHost
     port: 80
-    serverPort: *communicationsAppPort
+    serverPort: *trackerServerGoPort
     servicePort: 8080
     trackerServerGo:
       port: *trackerServerGoPort
