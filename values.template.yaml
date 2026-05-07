@@ -69,17 +69,25 @@ trackerclientgo:
 
 communicationsapp:
   communicationsApp:
-    host: *networkHost
+    host: *envoyHost
     port: 80
+    serverPort: *communicationsAppPort
     servicePort: 8080
+    trackerServerGo:
+      port: *trackerServerGoPort
+    trackerClientGo:
+      port: *trackerClientGoPort
+    trackerAnalyticsApp:
+      port: *trackerAnalyticsPort
+    mqttWsUrl: "ws://{{ .Values.global.mqtt.host }}:{{ .Values.global.mqtt.port }}/mqtt"
     image:
       repository: docker.io/jhonnyvennom/communications_app
-      tag: "1.7.2"
+      tag: "1.6.1"
       arch: amd64
     replicas: 1
     resources:
-      requests: { memory: "256Mi", cpu: "128m" }
-      limits:   { memory: "256Mi", cpu: "128m" }
+      requests: { memory: "256Mi", cpu: "100m" }
+      limits:   { memory: "256Mi", cpu: "100m" }
     nodeSelector: []
       
 trackeranalytics:
