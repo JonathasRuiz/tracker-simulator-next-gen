@@ -34,11 +34,6 @@ spec:
       containers:
         - image: "{{ .Values.communicationsApp.image.repository }}:{{ .Values.communicationsApp.image.tag }}-{{ .Values.communicationsApp.image.arch }}"
           name: communications-app
-          envFrom:
-            - configMapRef:
-                name: {{ .Values.global.appName }}-communications-app-config
-            - secretRef:
-                name: {{ .Values.global.appName }}-secrets
           ports:
             - containerPort: {{ .Values.communicationsApp.port }}
               protocol: TCP
