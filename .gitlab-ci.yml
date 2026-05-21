@@ -1,0 +1,74 @@
+default:
+  tags:
+    - minipc
+    - amd64
+
+stages:
+  - deploy
+  - destroy
+
+variables:
+  ACTION:
+    value: "none"
+    options:
+      - "none"
+      - "spin-up"
+      - "tear-down"
+    description: "Select whether to spin up or tear down the app"
+
+before_script:
+  - echo "Before script section"
+  - echo "For example you might run an update here or install a build dependency"
+  - echo "Or perhaps you might print out some debugging details"
+
+after_script:
+  - echo "After script section"
+  - echo "For example you might do some cleanup here"
+
+spin_up_pipeline:
+  tags:
+    - minipc
+    - amd64
+  stage: deploy
+  rules:
+    - if: '$ACTION == "spin-up"'
+  script:
+    - echo "spin up infrastructure via script in host"
+    - cat ./compose.yaml
+    - echo "clean up any existing infrastructure first"
+    - podman rm -f `podman ps -aq` || true
+    - echo "Spinning up infrastructure with podman compose"
+    - podman compose -f ./compose.yaml up -d
+    - echo "Wrap up spining up infrastructure"  
+    - echo "Now deploy app with helm"
+    - echo "ls -al "
+    - echo "Install current chart"
+    - helm upgrade --install tracker-simulator-nextgen ./tracker-simulator-nextgen-0.1.0.tgz --values /home/jonathas/.config/tracker-simulator/nextgen.values.yaml
+    - echo "Install envoy helm chart"
+    - helm upgrade --install tracker-simulator-envoy-nextgen https://github.com/JonathasRuiz/tracker-simulator-envoy-nextgen/raw/refs/heads/master/tracker-simulator-envoy-nextgen-0.1.0.tgz --values /home/jonathas/.config/tracker-simulator/nextgen.envoy.values.yaml
+  environment: staging
+
+
+teardown_pipeline:
+  tags:
+    - minipc
+    - amd64
+  stage: destroy
+  rules:
+    - if: '$ACTION == "tear-down"'
+  script:
+    - echo "tear down infrastructure via script in host"
+    - cat ./compose.yaml
+    - podman compose -f ./compose.yaml down
+    - echo "Wrap up tearing down infrastructure"  
+    - echo "Now deploy app with helm file"
+    - echo "ls -al "
+    - helm uninstall tracker-simulator-nextgen
+    - helm uninstall tracker-simulator-envoy-nextgen
+  environment: staging
+
+init_job:
+  stage: deploy
+  script:
+    - echo "This job runs on standard pushes so the pipeline is never empty!"
+

@@ -1,0 +1,30 @@
+services:
+  redis:
+    image: docker.io/redis
+    ports:
+      - '6379:6379'
+    depends_on:
+      - haproxy
+      - consul
+    networks:
+      - horizontalscaling
+  emqx:
+    image: docker.io/emqx/emqx:5.8.3
+    ports:
+      - "1883:1883"
+      - "9001:8083"
+      - "8090:8083" # Ws port for WebSocket support
+      - "14567:14567/udp" # QUIC
+      - "18083:18083" # Dashboard
+    environment:
+      - EMQX_ALLOW_ANONYMOUS=true
+      - EMQX_LISTENERS__QUIC__DEFAULT__ENABLED=true
+      - EMQX_LISTENERS__QUIC__DEFAULT__KEYFILE=etc/certs/key.pem
+      - EMQX_LISTENERS__QUIC__DEFAULT__CERTFILE=etc/certs/cert.pem
+    networks:
+      - horizontalscaling
+volumes:
+  haproxy-socket: {}
+networks:
+  horizontalscaling:
+    driver: bridge
