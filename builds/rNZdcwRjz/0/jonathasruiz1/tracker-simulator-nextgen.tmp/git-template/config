@@ -1,0 +1,10 @@
+[init]
+	defaultBranch = none
+[fetch]
+	recurseSubmodules = false
+[credential]
+	interactive = never
+[gc]
+	autoDetach = false
+[include]
+	path = /home/jonathas/Documents/helm/tracker-simulator-nextgen/builds/rNZdcwRjz/0/jonathasruiz1/tracker-simulator-nextgen.tmp/.gitlab-runner.ext.conf

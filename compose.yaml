@@ -3,9 +3,6 @@ services:
     image: docker.io/redis
     ports:
       - '6379:6379'
-    depends_on:
-      - haproxy
-      - consul
     networks:
       - horizontalscaling
   emqx:
