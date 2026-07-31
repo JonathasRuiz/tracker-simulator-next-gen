@@ -14,3 +14,5 @@ data:
   QUIC_PORT: '{{ .Values.trackerClientGo.quicPort }}'
   MQTT_BROKER_HOST: '{{ .Values.global.mqtt.host }}'
   MQTT_BROKER_PORT: '{{ .Values.global.mqtt.quicPort }}'
+  REDIS_HOST: '{{ .Values.global.redis.host }}'
+  REDIS_PORT: '{{ .Values.global.redis.port }}'  
