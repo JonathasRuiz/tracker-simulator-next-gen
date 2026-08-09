@@ -37,6 +37,8 @@ spec:
           envFrom:
             - configMapRef:
                 name: {{ .Values.global.appName }}-tracker-analytics-config
+            - secretRef:
+                name: {{ .Values.global.appName }}-secrets
           ports:
             - containerPort: {{ .Values.trackerAnalytics.port }}
               protocol: TCP

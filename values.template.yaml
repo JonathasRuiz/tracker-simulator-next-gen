@@ -11,6 +11,7 @@ global:
   redis:
     host: &redisHost "<YOUR_INFRA_HOST_IP_OR_DNS>"
     port: 6379
+    password: ""
     streamKey: "latency:metrics:stream"
 
   mqtt:
